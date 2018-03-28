@@ -24,17 +24,17 @@ url: "https://dbain.wales" # the base hostname & protocol for your site, e.g. ht
 twitter_username: michalinwales
 github_username:  michalporeba
 
+jekyll_analytics:
+  GoogleAnalytics:          # Add, if you want to track with Google Analytics
+    id: UA-116550835-1      # Required - replace with your tracking id
+    anonymizeIp: false      # Optional - Default: false - set to true for anonymized tracking
+
 # Build settings
 markdown: kramdown
 theme: minima
 plugins:
   - jekyll-feed
   - jekyll-analytics
-
-yekyll_analytics:
-  GoogleAnalytics:          # Add, if you want to track with Google Analytics
-    id: UA-116550835-1          # Required - replace with your tracking id
-    anonymizeIp: false      # Optional - Default: false - set to true for anonymized tracking
 
 # Exclude from processing.
 # The following items will not be processed, by default. Create a custom list
