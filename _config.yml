@@ -16,9 +16,9 @@
 title: DBA in Wales
 email: michalporeba@gmail.com
 description: >- # this means to ignore newlines until "baseurl:"
-  Write an awesome description for your new site here. You can edit this
-  line in _config.yml. It will appear in your document head meta (for
-  Google search results) and in your feed.xml site description.
+  I am a DBA in Wales who likes to code with C# and PowerShell, 
+  play music with Ruby, speak obscure languages 
+  and discover places most people don't ever go to.
 baseurl: "" # the subpath of your site, e.g. /blog
 url: "https://dbain.wales" # the base hostname & protocol for your site, e.g. http://example.com
 twitter_username: michalinwales
@@ -28,6 +28,8 @@ jekyll_analytics:
   GoogleAnalytics:          # Add, if you want to track with Google Analytics
     id: UA-116550835-1      # Required - replace with your tracking id
     anonymizeIp: false      # Optional - Default: false - set to true for anonymized tracking
+
+google_analytics: UA-116550835-1
 
 # Build settings
 markdown: kramdown
