@@ -2,7 +2,8 @@
 layout: post
 title:  "VS Code and Pester"
 date:   2018-03-31 16:00:00 +0100
-categories: VSCode, PowerShell, Pester
+categories: VSCode PowerShell Pester
+permalink: "about/vscode-and-pester"
 ---
 
 I have recently switched to Visual Studio Code for writing PowerShell scripts. At the same time I started using Pester to do TDD with PowerShell too. It works very well out of the box, at least at the beginning of the project. As you are writing your Pester tests file to cover the function you have just written you can simply hit F5 to execute all of the tests in that file. Easy. 
@@ -27,7 +28,7 @@ To solve this problem I have created [`workinprogress.ps1`](https://gist.github.
 }
 {% endhighlight %}
 
-VS Code will pass the current workspace, the path to the unit tests `${workspaceFolder}/tests` in the example, and the open file with the current line number. Based on that information the following will happen when you hit F5
+VS Code will pass the current workspace, the path to the unit tests (`${workspaceFolder}/tests` in the example), and the open file with the current line number. Based on that information the following will happen when you hit F5
 
 * if there is a module (.psm1) file in the workspace, the module will be reloaded
 * if the open file name ends with `.Tests.ps1` the script will attempt to find the closest pester `-Tag` and execute only that tag from the current file. Failing that the whole pester file will be executed
