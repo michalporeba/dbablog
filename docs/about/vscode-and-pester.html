@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1"><!-- Begin Jekyll SEO tag v2.4.0 -->
+<title>VS Code and Pester | DBA in Wales</title>
+<meta name="generator" content="Jekyll v3.7.3" />
+<meta property="og:title" content="VS Code and Pester" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="I have recently switched to Visual Studio Code for writing PowerShell scripts. At the same time I started using Pester to do TDD with PowerShell too. It works very well out of the box, at least at the beginning of the project. As you are writing your Pester tests file to cover the function you have just written you can simply hit F5 to execute all of the tests in that file. Easy." />
+<meta property="og:description" content="I have recently switched to Visual Studio Code for writing PowerShell scripts. At the same time I started using Pester to do TDD with PowerShell too. It works very well out of the box, at least at the beginning of the project. As you are writing your Pester tests file to cover the function you have just written you can simply hit F5 to execute all of the tests in that file. Easy." />
+<link rel="canonical" href="http://dbain.wales/about/vscode-and-pester" />
+<meta property="og:url" content="http://dbain.wales/about/vscode-and-pester" />
+<meta property="og:site_name" content="DBA in Wales" />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2018-03-31T16:00:00+01:00" />
+<script type="application/ld+json">
+{"headline":"VS Code and Pester","dateModified":"2018-03-31T16:00:00+01:00","datePublished":"2018-03-31T16:00:00+01:00","mainEntityOfPage":{"@type":"WebPage","@id":"http://dbain.wales/about/vscode-and-pester"},"url":"http://dbain.wales/about/vscode-and-pester","description":"I have recently switched to Visual Studio Code for writing PowerShell scripts. At the same time I started using Pester to do TDD with PowerShell too. It works very well out of the box, at least at the beginning of the project. As you are writing your Pester tests file to cover the function you have just written you can simply hit F5 to execute all of the tests in that file. Easy.","@type":"BlogPosting","@context":"http://schema.org"}</script>
+<!-- End Jekyll SEO tag -->
+<link rel="stylesheet" href="/assets/main.css"><link type="application/atom+xml" rel="alternate" href="http://dbain.wales/feed.xml" title="DBA in Wales" />
+    <!-- Google Analytics -->
+    <script>
+    (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+    (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+    m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+    })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+    ga('create', 'UA-116550835-1', 'auto');
+	ga('send', 'pageview', { 'page': location.pathname + location.search + location.hash});
+	ga('set', 'anonymizeIp', false);
+    </script>
+    <!-- End Google Analytics -->
+    </head>
+<body><header class="site-header" role="banner">
+
+  <div class="wrapper"><a class="site-title" rel="author" href="/">DBA in Wales</a><nav class="site-nav">
+        <input type="checkbox" id="nav-trigger" class="nav-trigger" />
+        <label for="nav-trigger">
+          <span class="menu-icon">
+            <svg viewBox="0 0 18 15" width="18px" height="15px">
+              <path fill="#424242" d="M18,1.484c0,0.82-0.665,1.484-1.484,1.484H1.484C0.665,2.969,0,2.304,0,1.484l0,0C0,0.665,0.665,0,1.484,0 h15.031C17.335,0,18,0.665,18,1.484L18,1.484z"/>
+              <path fill="#424242" d="M18,7.516C18,8.335,17.335,9,16.516,9H1.484C0.665,9,0,8.335,0,7.516l0,0c0-0.82,0.665-1.484,1.484-1.484 h15.031C17.335,6.031,18,6.696,18,7.516L18,7.516z"/>
+              <path fill="#424242" d="M18,13.516C18,14.335,17.335,15,16.516,15H1.484C0.665,15,0,14.335,0,13.516l0,0 c0-0.82,0.665-1.484,1.484-1.484h15.031C17.335,12.031,18,12.696,18,13.516L18,13.516z"/>
+            </svg>
+          </span>
+        </label>
+
+        <div class="trigger"><a class="page-link" href="/about/">About</a></div>
+      </nav></div>
+</header>
+<main class="page-content" aria-label="Content">
+      <div class="wrapper">
+        <article class="post h-entry" itemscope itemtype="http://schema.org/BlogPosting">
+
+  <header class="post-header">
+    <h1 class="post-title p-name" itemprop="name headline">VS Code and Pester</h1>
+    <p class="post-meta">
+      <time class="dt-published" datetime="2018-03-31T16:00:00+01:00" itemprop="datePublished">Mar 31, 2018
+      </time></p>
+  </header>
+
+  <div class="post-content e-content" itemprop="articleBody">
+    <p>I have recently switched to Visual Studio Code for writing PowerShell scripts. At the same time I started using Pester to do TDD with PowerShell too. It works very well out of the box, at least at the beginning of the project. As you are writing your Pester tests file to cover the function you have just written you can simply hit F5 to execute all of the tests in that file. Easy.</p>
+
+<p>It’s just that it is backwards. The tests should have already been written, and as you are writing your function that will satisfy the tests you try to press F5 and that function gets executed, not the tests. Even more so, if the function is part a module it gets executed out of context. Nothing works.</p>
+
+<p>To solve this problem I have created <a href="https://gist.github.com/michalporeba/5103a2fae1b1dfa3c1f09b9f4d225420"><code class="highlighter-rouge">workinprogress.ps1</code></a> file which I typically keep just outside of the repository and define the following VS Code configuration in my <code class="highlighter-rouge">launch.json</code> file.</p>
+
+<figure class="highlight"><pre><code class="language-powershell" data-lang="powershell"><span class="o">{</span>
+    <span class="s2">"version"</span>: <span class="s2">"0.2.0"</span>,
+    <span class="s2">"configurations"</span>: <span class="o">[</span>
+
+        <span class="o">{</span>
+            <span class="s2">"type"</span>: <span class="s2">"PowerShell"</span>,
+            <span class="s2">"request"</span>: <span class="s2">"launch"</span>,
+            <span class="s2">"name"</span>: <span class="s2">"Test workinprogress"</span>,
+            <span class="s2">"script"</span>: <span class="s2">"</span><span class="k">${</span><span class="nv">workspaceFolder</span><span class="k">}</span><span class="s2">/../workinprogress.ps1"</span>,
+            <span class="s2">"args"</span>: <span class="o">[</span> <span class="s2">"</span><span class="k">${</span><span class="nv">workspaceFolder</span><span class="k">}</span><span class="s2">"</span>, <span class="s2">"</span><span class="k">${</span><span class="nv">workspaceFolder</span><span class="k">}</span><span class="s2">/tests"</span>, <span class="s2">"</span><span class="k">${</span><span class="nv">file</span><span class="k">}</span><span class="s2">"</span> <span class="o">]</span>
+        <span class="o">}</span>
+    <span class="o">]</span>
+<span class="o">}</span></code></pre></figure>
+
+<p>VS Code will pass the current workspace, the path to the unit tests (<code class="highlighter-rouge">${workspaceFolder}/tests</code> in the example), and the open file with the current line number. Based on that information the following will happen when you hit F5</p>
+
+<ul>
+  <li>if there is a module (.psm1) file in the workspace, the module will be reloaded</li>
+  <li>if the open file name ends with <code class="highlighter-rouge">.Tests.ps1</code> the script will attempt to find the closest pester <code class="highlighter-rouge">-Tag</code> and execute only that tag from the current file. Failing that the whole pester file will be executed</li>
+  <li>if it is not a pester file but the matching (by name) test file exists next to the open file, it will be executed.</li>
+  <li>if there is a matching (by name) test file somewhere inside the tests folder (<code class="highlighter-rouge">${workspaceFoder}/tests</code> in this example) it will be executed.</li>
+</ul>
+
+<p>A matching test file has the same name as the original file but ends with <code class="highlighter-rouge">.Tests.ps1</code> instead of <code class="highlighter-rouge">.ps1</code>. So for a command file <code class="highlighter-rouge">Get-MyValue.ps1</code> the matching tests file is <code class="highlighter-rouge">Get-MyValue.Tests.ps1</code></p>
+
+<p>The <code class="highlighter-rouge">workinprogress.ps1</code> file is available on github <a href="https://gist.github.com/michalporeba/5103a2fae1b1dfa3c1f09b9f4d225420">here</a>.</p>
+
+  </div><a class="u-url" href="/about/vscode-and-pester" hidden></a>
+</article>
+
+      </div>
+    </main><footer class="site-footer h-card">
+  <data class="u-url" href="/"></data>
+
+  <div class="wrapper">
+
+    <h2 class="footer-heading">DBA in Wales</h2>
+
+    <div class="footer-col-wrapper">
+      <div class="footer-col footer-col-1">
+        <ul class="contact-list">
+          <li class="p-name">DBA in Wales</li><li><a class="u-email" href="mailto:michalporeba@gmail.com">michalporeba@gmail.com</a></li></ul>
+      </div>
+
+      <div class="footer-col footer-col-2"><ul class="social-media-list"><li><a href="https://github.com/michalporeba"><svg class="svg-icon"><use xlink:href="/assets/minima-social-icons.svg#github"></use></svg> <span class="username">michalporeba</span></a></li><li><a href="https://www.twitter.com/michalinwales"><svg class="svg-icon"><use xlink:href="/assets/minima-social-icons.svg#twitter"></use></svg> <span class="username">michalinwales</span></a></li></ul>
+</div>
+
+      <div class="footer-col footer-col-3">
+        <p>I am a DBA in Wales who likes to code with C# and PowerShell,  play music with Ruby, speak obscure languages  and discover places most people don&#39;t ever go to.</p>
+      </div>
+    </div>
+
+  </div>
+
+</footer>
+</body>
+
+</html>

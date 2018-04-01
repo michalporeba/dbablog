@@ -31,6 +31,8 @@ plugins:
   - jekyll-feed
   - jekyll-analytics
 
+destination: docs/
+
 jekyll_analytics:
   GoogleAnalytics:          # Add, if you want to track with Google Analytics
     id: UA-116550835-1      # Required - replace with your tracking id
