@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1"><!-- Begin Jekyll SEO tag v2.4.0 -->
+<title>DBA blogging with jekyll on GitHub Pages | DBA in Wales</title>
+<meta name="generator" content="Jekyll v3.7.3" />
+<meta property="og:title" content="DBA blogging with jekyll on GitHub Pages" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="I decided to start blogging again" />
+<meta property="og:description" content="I decided to start blogging again" />
+<link rel="canonical" href="http://dbain.wales/about/jekyll-on-GitHub-Pages" />
+<meta property="og:url" content="http://dbain.wales/about/jekyll-on-GitHub-Pages" />
+<meta property="og:site_name" content="DBA in Wales" />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2018-04-07T07:00:00+01:00" />
+<script type="application/ld+json">
+{"headline":"DBA blogging with jekyll on GitHub Pages","dateModified":"2018-04-07T07:00:00+01:00","datePublished":"2018-04-07T07:00:00+01:00","url":"http://dbain.wales/about/jekyll-on-GitHub-Pages","mainEntityOfPage":{"@type":"WebPage","@id":"http://dbain.wales/about/jekyll-on-GitHub-Pages"},"description":"I decided to start blogging again","@type":"BlogPosting","@context":"http://schema.org"}</script>
+<!-- End Jekyll SEO tag -->
+<link rel="stylesheet" href="/assets/main.css"><link type="application/atom+xml" rel="alternate" href="http://dbain.wales/feed.xml" title="DBA in Wales" />
+    <!-- Google Analytics -->
+    <script>
+    (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+    (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+    m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+    })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+    ga('create', 'UA-116550835-1', 'auto');
+	ga('send', 'pageview', { 'page': location.pathname + location.search + location.hash});
+	ga('set', 'anonymizeIp', false);
+    </script>
+    <!-- End Google Analytics -->
+    </head>
+<body><header class="site-header" role="banner">
+
+  <div class="wrapper"><a class="site-title" rel="author" href="/">DBA in Wales</a><nav class="site-nav">
+        <input type="checkbox" id="nav-trigger" class="nav-trigger" />
+        <label for="nav-trigger">
+          <span class="menu-icon">
+            <svg viewBox="0 0 18 15" width="18px" height="15px">
+              <path fill="#424242" d="M18,1.484c0,0.82-0.665,1.484-1.484,1.484H1.484C0.665,2.969,0,2.304,0,1.484l0,0C0,0.665,0.665,0,1.484,0 h15.031C17.335,0,18,0.665,18,1.484L18,1.484z"/>
+              <path fill="#424242" d="M18,7.516C18,8.335,17.335,9,16.516,9H1.484C0.665,9,0,8.335,0,7.516l0,0c0-0.82,0.665-1.484,1.484-1.484 h15.031C17.335,6.031,18,6.696,18,7.516L18,7.516z"/>
+              <path fill="#424242" d="M18,13.516C18,14.335,17.335,15,16.516,15H1.484C0.665,15,0,14.335,0,13.516l0,0 c0-0.82,0.665-1.484,1.484-1.484h15.031C17.335,12.031,18,12.696,18,13.516L18,13.516z"/>
+            </svg>
+          </span>
+        </label>
+
+        <div class="trigger"><a class="page-link" href="/about/">About</a></div>
+      </nav></div>
+</header>
+<main class="page-content" aria-label="Content">
+      <div class="wrapper">
+        <article class="post h-entry" itemscope itemtype="http://schema.org/BlogPosting">
+
+  <header class="post-header">
+    <h1 class="post-title p-name" itemprop="name headline">DBA blogging with jekyll on GitHub Pages</h1>
+    <p class="post-meta">
+      <time class="dt-published" datetime="2018-04-07T07:00:00+01:00" itemprop="datePublished">Apr 7, 2018
+      </time></p>
+  </header>
+
+  <div class="post-content e-content" itemprop="articleBody">
+    <h3 id="i-decided-to-start-blogging-again">I decided to start blogging again</h3>
+
+<p>I had few prerequisits:</p>
+<ul>
+  <li>the code examples in the posts should look well with syntax highlighting</li>
+  <li>the writing, including examples should be easy, preferably in markdown</li>
+  <li>the content shoulb be mine to take and share easily</li>
+  <li>it should be possible to easily work on content over a period of time, from multiple devices</li>
+  <li>it should be possible to see some trafic data as after all we all have our egos that need to be fed</li>
+</ul>
+
+<p>After reviewing a number of more obvious (at the time) options I have decided to use <a href="https://jekyllrb.com">jekyll</a>, manage the content in a public <a href="https://github.com">GitHub</a> repo and host the blog on <a href="https://pages.github.com/">GitHub Pages</a>. This post not meant to explain what those tools are, or why I made this decision. It is simply a set of instructions, mostly for myself, how to use jekyll to write and deploy blog posts hosted on GitHub Pages. If you find it helpful too, good for you.</p>
+
+<p>GitHub Pages support jekyll, in many cases all one needs to do is follow <a href="https://jekyllrb.com/docs/github-pages/">the instructions</a> and enjoy the results. I created the respotiory, gh-pages branch, generated an empty jekyll site, committed, pushed and there it was, my new website satisfying most of my requirements. Then trying to get a custom plugin (<a href="https://github.com/hendrikschneider/jekyll-analytics">jekyll-analytics</a> for the ego requirement) to work took me much longer than I expected, almost to the point when I started to question my choice. Locally everything would work just as expected, but after pushing to github, the page would update, but the plugin was not available.</p>
+
+<p>My problem was caused by a little advertised feature: <em>GitHub Pages supports jekyll</em>, and the plugins, <em>but only</em> plugins which have been <em>whitelisted</em> in the <a href="https://github.com/github/pages-gem">pages-gem</a>. The same applies to themes it appears. The full list can be found in the source code <a href="https://github.com/github/pages-gem/blob/master/lib/github-pages/plugins.rb">here</a></p>
+
+<p>Here are the steps to work around this limitation:</p>
+<ul>
+  <li>create <code class="highlighter-rouge">/docs</code> folder in your repository</li>
+  <li>add <code class="highlighter-rouge">destination: docs/</code> to the <code class="highlighter-rouge">_config.yml</code></li>
+  <li>change GitHub Pages configuration of your repository to serve pages from the <code class="highlighter-rouge">/docs</code> folder</li>
+  <li>when ready to publish new version of the blog, build it locally</li>
+  <li>commit and push to master branch</li>
+</ul>
+
+<h2 id="working-with-the-existing-blog">working with the existing blog</h2>
+
+<p>Since we are working with github I assume Git Bash is installed, and that is what I use in the next steps</p>
+
+<h3 id="setting-up-a-new-workstation">setting up a new workstation</h3>
+
+<p>A good place to start is <a href="https://jekyllrb.com/docs/installation/#requirements">here</a>. Below are the steps I take.</p>
+
+<ol>
+  <li>install <a href="https://rubyinstaller.org/downloads/">Ruby</a>.
+    <ul>
+      <li>MSYS2 base</li>
+      <li>MSYS2 system update</li>
+      <li>MSYS and MINGW development toolchain</li>
+    </ul>
+  </li>
+  <li>check versions - (versions at the time of writing)
+    <ul>
+      <li><code class="highlighter-rouge">gcc --version</code> (5.2.0)</li>
+      <li><code class="highlighter-rouge">ruby -v</code> (2.5.1)</li>
+      <li><code class="highlighter-rouge">gem -v</code> (2.7.6)</li>
+    </ul>
+  </li>
+  <li>install the Bundler gem <code class="highlighter-rouge">gem install bundler</code></li>
+  <li>install jekyll <code class="highlighter-rouge">gem install jekyll</code></li>
+  <li>restart the git bash</li>
+</ol>
+
+<h3 id="working-with-an-existing-blog">working with an existing blog</h3>
+
+<ol>
+  <li>go to the folder containing the blog</li>
+  <li>pull the latest version <code class="highlighter-rouge">git pull</code></li>
+  <li>install the plugins <code class="highlighter-rouge">bundle install</code></li>
+  <li>start local version <code class="highlighter-rouge">bundle exec jekyll serve --watch</code></li>
+</ol>
+
+<p>Edit the files as needed, check the changes through a web browser on <code class="highlighter-rouge">http://localhost:4000</code>. jekyll observes the changes in the files and regenerates the site automatically</p>
+
+<h3 id="when-finished">when finished</h3>
+
+<ol>
+  <li>make sure all old files are removed <code class="highlighter-rouge">bundle exec jekyll clean</code></li>
+  <li>build the production version of the blog <code class="highlighter-rouge">JEKYLL_ENV=production bundle exec jekyll build</code></li>
+</ol>
+
+  </div><a class="u-url" href="/about/jekyll-on-GitHub-Pages" hidden></a>
+</article>
+
+      </div>
+    </main><footer class="site-footer h-card">
+  <data class="u-url" href="/"></data>
+
+  <div class="wrapper">
+
+    <h2 class="footer-heading">DBA in Wales</h2>
+
+    <div class="footer-col-wrapper">
+      <div class="footer-col footer-col-1">
+        <ul class="contact-list">
+          <li class="p-name">DBA in Wales</li><li><a class="u-email" href="mailto:michalporeba@gmail.com">michalporeba@gmail.com</a></li></ul>
+      </div>
+
+      <div class="footer-col footer-col-2"><ul class="social-media-list"><li><a href="https://github.com/michalporeba"><svg class="svg-icon"><use xlink:href="/assets/minima-social-icons.svg#github"></use></svg> <span class="username">michalporeba</span></a></li><li><a href="https://www.twitter.com/michalinwales"><svg class="svg-icon"><use xlink:href="/assets/minima-social-icons.svg#twitter"></use></svg> <span class="username">michalinwales</span></a></li></ul>
+</div>
+
+      <div class="footer-col footer-col-3">
+        <p>I am a DBA in Wales who likes to code with C# and PowerShell,  play music with Ruby, speak obscure languages  and discover places most people don&#39;t ever go to.</p>
+      </div>
+    </div>
+
+  </div>
+
+</footer>
+</body>
+
+</html>
