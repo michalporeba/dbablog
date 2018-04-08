@@ -2,7 +2,7 @@
 layout: post
 title:  "DBA blogging with jekyll on GitHub Pages"
 date:   2018-04-07 07:00:00 +0100
-categories: VSCode PowerShell Pester
+categories: jekyll
 permalink: "about/jekyll-on-GitHub-Pages"
 ---
 
