@@ -2,7 +2,7 @@
 layout: post
 title:  "TDD with VS Code and Pester"
 date:   2018-03-31 16:00:00 +0100
-categories: VSCode PowerShell Pester
+categories: jekyll github
 permalink: "about/tdd-with-vscode-and-pester"
 ---
 
