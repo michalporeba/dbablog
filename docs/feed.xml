@@ -1,4 +1,260 @@
-<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="3.7.3">Jekyll</generator><link href="http://dbain.wales/feed.xml" rel="self" type="application/atom+xml" /><link href="http://dbain.wales/" rel="alternate" type="text/html" /><updated>2018-04-08T10:19:33+01:00</updated><id>http://dbain.wales/</id><title type="html">DBA in Wales</title><subtitle>I am a DBA in Wales who likes to code with C# and PowerShell,  play music with Ruby, speak obscure languages  and discover places most people don't ever go to.</subtitle><entry><title type="html">DBA blogging with jekyll on GitHub Pages</title><link href="http://dbain.wales/about/jekyll-on-GitHub-Pages" rel="alternate" type="text/html" title="DBA blogging with jekyll on GitHub Pages" /><published>2018-04-07T07:00:00+01:00</published><updated>2018-04-07T07:00:00+01:00</updated><id>http://dbain.wales/about/jekyll-how-to</id><content type="html" xml:base="http://dbain.wales/about/jekyll-on-GitHub-Pages">&lt;h3 id=&quot;i-decided-to-start-blogging-again&quot;&gt;I decided to start blogging again&lt;/h3&gt;
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="3.7.3">Jekyll</generator><link href="http://dbain.wales/feed.xml" rel="self" type="application/atom+xml" /><link href="http://dbain.wales/" rel="alternate" type="text/html" /><updated>2018-04-09T22:43:18+01:00</updated><id>http://dbain.wales/</id><title type="html">DBA in Wales</title><subtitle>I am a DBA in Wales who likes to code with C# and PowerShell,  play music with Ruby, speak obscure languages  and discover places most people don't ever go to.</subtitle><entry><title type="html">Automated environmental checks with Pester</title><link href="http://dbain.wales/about/environmental-checks" rel="alternate" type="text/html" title="Automated environmental checks with Pester" /><published>2018-04-09T22:42:22+01:00</published><updated>2018-04-09T22:42:22+01:00</updated><id>http://dbain.wales/about/automated-environmental-checks</id><content type="html" xml:base="http://dbain.wales/about/environmental-checks">&lt;h3 id=&quot;unit-test-your-environments&quot;&gt;Unit Test Your Environments&lt;/h3&gt;
+
+&lt;p&gt;&lt;a href=&quot;https://en.wikipedia.org/wiki/Infrastructure_as_Code&quot;&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;Infrastructure as Code&lt;/code&gt;&lt;/a&gt; has been around for quite some time now. There are many clever definitions one can easily find, but for me it is simply an extension of good codinging (or perhaps DevOpsing) principals. You don’t go into production systems and keep making changes until it works. You write your code, you check it into your favourite repository, then there is some process that will automatically test it, and eventually it will make its way to production environment. That way if you make a mistake, you can see where you made it and if it happens to work just fine, you can easily do it again, and again, and again as you scale out.&lt;/p&gt;
+
+&lt;p&gt;It’s all &lt;del&gt;very&lt;/del&gt; easy when you work with ‘cloud’ virtual environments that wait to ingest next config file and reconfigure themselves automatically. But what if you look after a more traditional setup? Exchange, Share Point, SQL Server clusters hosted on premises on Windows Servers, rather than Docker pods? What if your are not the only admin and people do go in there and make changes to live systems’ configuration, perhaps even for good reasons?&lt;/p&gt;
+
+&lt;p&gt;I’d say you do the same as any decent software developer would do when asked to take care of on old, perhaps unfashionable, non-microservice code base: When asked to change anything, start with writing unit tests so you know at the very least you will not make it any worse. That’s right, even if you cannot define your configuration with code, you can test it with it. PowerShell and &lt;a href=&quot;https://github.com/pester/Pester&quot;&gt;Pester&lt;/a&gt; are great tools to do so. And if you happen to be responsible for SQL Servers, then there are unit tests already written for you, available as the &lt;a href=&quot;https://dbachecks.io&quot;&gt;dbachecks&lt;/a&gt; module. It’s MIT licensed. Go, install it and use it.&lt;/p&gt;
+
+&lt;h3 id=&quot;powershell-and-pester&quot;&gt;PowerShell and Pester&lt;/h3&gt;
+
+&lt;p&gt;Pester is an open source test and mock framework for PowerShell. All modern Windows servers have PowerShell, so let’s use it. &lt;a href=&quot;http://jakubjares.com&quot;&gt;Jakub Jareš&lt;/a&gt; one of the contributors to the Pester project has written an &lt;a href=&quot;http://jakubjares.com/2017/12/07/testing-your-environment-tests/&quot;&gt;excelent blog post&lt;/a&gt; about environmental checks, how to write them in Pester and why you should test you &lt;del&gt;tests&lt;/del&gt; checks. That was my starting point when I took it on myself to improve dbachecks. If you haven’t yet, go and read it. I will try not to repeat what Jakub wrote there, but rather where I got from there while trying to find a way to structure checks in such a way, that they are both testable, and easily understood by non-developer sysadmins.&lt;/p&gt;
+
+&lt;h3 id=&quot;the-difference&quot;&gt;The Difference&lt;/h3&gt;
+
+&lt;p&gt;Unit tests typically follow the AAA pattern.&lt;/p&gt;
+&lt;ul&gt;
+  &lt;li&gt;&lt;strong&gt;Arrange&lt;/strong&gt; your context&lt;/li&gt;
+  &lt;li&gt;&lt;strong&gt;Act&lt;/strong&gt; (as in perform the action you want to test), and finally&lt;/li&gt;
+  &lt;li&gt;&lt;strong&gt;Assert&lt;/strong&gt; that the outcome matches your expectations&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;In unit testing the objective is to test the functionality detached (as much as practical) from the outside environment. Obviously that’s something that cannot be done when doing environmental checks. After all, the environments is what we are testing, so the AAA becomes CCC&lt;/p&gt;
+&lt;ul&gt;
+  &lt;li&gt;&lt;strong&gt;Configure&lt;/strong&gt; your context, get the configuration for the the environment you are validating&lt;/li&gt;
+  &lt;li&gt;&lt;strong&gt;Collect&lt;/strong&gt; the data about your environment&lt;/li&gt;
+  &lt;li&gt;&lt;strong&gt;Confirm&lt;/strong&gt; the real life matches your expectations&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;Describing it like that stopped me going in circles thinking how do I test my tests. Now I’m testing my checks and to do that I follow the AAA pattern.&lt;/p&gt;
+&lt;ul&gt;
+  &lt;li&gt;I &lt;em&gt;arrange&lt;/em&gt; my test by mocking my &lt;em&gt;configure&lt;/em&gt; and &lt;em&gt;collect&lt;/em&gt; actions&lt;/li&gt;
+  &lt;li&gt;I &lt;em&gt;act&lt;/em&gt; by calling the &lt;em&gt;confirm&lt;/em&gt; action passing it the mocked details&lt;/li&gt;
+  &lt;li&gt;I &lt;em&gt;assert&lt;/em&gt; the outcome by checking if the &lt;em&gt;confirm&lt;/em&gt; action behaved as expected&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;Ideally that would be it, write a Pester unit test and then a test for that unit test. In practice it is slightly more complex as we have to work with the limitations of PowerShell and Pester (which after all is primarly for unit test not environmental checks)&lt;/p&gt;
+
+&lt;h3 id=&quot;code-examples&quot;&gt;Code Examples&lt;/h3&gt;
+
+&lt;p&gt;Typically my testable check has 4 components in 3 files. Here is an example from the dbachecks checking Page Verify option.&lt;/p&gt;
+
+&lt;p&gt;First we need to write the confirm function and its configuration 
+&lt;strong&gt;confirms\Database.PageVerify.ps1&lt;/strong&gt; which could be as simple as:&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-powershell&quot; data-lang=&quot;powershell&quot;&gt;&lt;table class=&quot;rouge-table&quot;&gt;&lt;tbody&gt;&lt;tr&gt;&lt;td class=&quot;gutter gl&quot;&gt;&lt;pre class=&quot;lineno&quot;&gt;1
+2
+3
+4
+5
+6
+7
+8
+9
+&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;code&quot;&gt;&lt;pre&gt;&lt;span class=&quot;k&quot;&gt;function &lt;/span&gt;Confirm-PageVerify &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
+    &lt;span class=&quot;k&quot;&gt;param&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;
+        &lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;parameter&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;Mandatory&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;$true&lt;/span&gt;,ValueFromPipeline&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;$true&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)]&lt;/span&gt;
+        &lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;kt&quot;&gt;object&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;[]]&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;$TestObject&lt;/span&gt;
+    &lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
+    &lt;span class=&quot;k&quot;&gt;process&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
+        &lt;span class=&quot;nv&quot;&gt;$TestObject&lt;/span&gt;.PageVerify | Should -Be &lt;span class=&quot;s2&quot;&gt;&quot;CHECKSUM&quot;&lt;/span&gt; -Because &lt;span class=&quot;s2&quot;&gt;&quot;we expect Page Verify to be CHECKSUM&quot;&lt;/span&gt;
+    &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
+&lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/tbody&gt;&lt;/table&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;But to be able to test configuration input and to make the Confirm function fit better with the rest of the framework w do&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-powershell&quot; data-lang=&quot;powershell&quot;&gt;&lt;table class=&quot;rouge-table&quot;&gt;&lt;tbody&gt;&lt;tr&gt;&lt;td class=&quot;gutter gl&quot;&gt;&lt;pre class=&quot;lineno&quot;&gt;1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;code&quot;&gt;&lt;pre&gt;&lt;span class=&quot;k&quot;&gt;function &lt;/span&gt;Get-ConfigForPageVerifyCheck &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
+    &lt;span class=&quot;nv&quot;&gt;$pageverifyValidValues&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; @&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;NONE&quot;&lt;/span&gt;, &lt;span class=&quot;s2&quot;&gt;&quot;TORN_PAGE_DETECTION&quot;&lt;/span&gt;, &lt;span class=&quot;s2&quot;&gt;&quot;CHECKSUM&quot;&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
+    &lt;span class=&quot;nv&quot;&gt;$pageverify&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; Get-DbcConfigValue policy.pageverify
+    &lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;(!(&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;$pageverify&lt;/span&gt; -in &lt;span class=&quot;nv&quot;&gt;$pageverifyValidValues&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;))&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
+        &lt;span class=&quot;k&quot;&gt;throw&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;The policy.pageverify is set to &lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;$pageverify&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;. Valid values are (&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;$(&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;$pageverifyValidValues&lt;/span&gt;.Join&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;, &quot;&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;))&quot;&lt;/span&gt;
+    &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
+    &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; @&lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
+        PageVerify &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;Get-DbcConfigValue policy.pageverify&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
+    &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
+&lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
+
+&lt;span class=&quot;k&quot;&gt;function &lt;/span&gt;Confirm-PageVerify &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
+    &lt;span class=&quot;k&quot;&gt;param&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;
+        &lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;parameter&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;Mandatory&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;$true&lt;/span&gt;,ValueFromPipeline&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;$true&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)]&lt;/span&gt;
+        &lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;kt&quot;&gt;object&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;[]]&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;$TestObject&lt;/span&gt;, 
+        &lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;parameter&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;Mandatory&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;$true&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)][&lt;/span&gt;Alias&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;With&quot;&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)]&lt;/span&gt;
+        &lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;kt&quot;&gt;object&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;]&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;$TestSettings&lt;/span&gt;,
+        &lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;kt&quot;&gt;string&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;]&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;$Because&lt;/span&gt;
+    &lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
+    &lt;span class=&quot;k&quot;&gt;process&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
+        &lt;span class=&quot;nv&quot;&gt;$TestObject&lt;/span&gt;.PageVerify | Should -Be &lt;span class=&quot;nv&quot;&gt;$TestSettings&lt;/span&gt;.PageVerify -Because &lt;span class=&quot;nv&quot;&gt;$Because&lt;/span&gt;
+    &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
+&lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/tbody&gt;&lt;/table&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;and to make sure it works as expected, we create unit tests for it 
+&lt;strong&gt;tests\checks\Database.PageVerify.Tests.ps1&lt;/strong&gt; like so&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-powershell&quot; data-lang=&quot;powershell&quot;&gt;&lt;table class=&quot;rouge-table&quot;&gt;&lt;tbody&gt;&lt;tr&gt;&lt;td class=&quot;gutter gl&quot;&gt;&lt;pre class=&quot;lineno&quot;&gt;1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;code&quot;&gt;&lt;pre&gt;Describe &lt;span class=&quot;s2&quot;&gt;&quot;Testing Page Verify Confirms&quot;&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
+    Context &lt;span class=&quot;s2&quot;&gt;&quot;Test configuration&quot;&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
+        &lt;span class=&quot;nv&quot;&gt;$cases&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; @&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;
+            @&lt;span class=&quot;o&quot;&gt;{&lt;/span&gt; Option &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;CHECKSUM&quot;&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;,
+            @&lt;span class=&quot;o&quot;&gt;{&lt;/span&gt; Option &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;TORN_PAGE_DETECTION&quot;&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;,
+            @&lt;span class=&quot;o&quot;&gt;{&lt;/span&gt; Option &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;NONE&quot;&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
+        &lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
+
+        It &lt;span class=&quot;s2&quot;&gt;&quot;&amp;lt;Option&amp;gt; is acceptable as policy.pageverify value&quot;&lt;/span&gt; -TestCases &lt;span class=&quot;nv&quot;&gt;$cases&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
+            &lt;span class=&quot;k&quot;&gt;param&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;$Option&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; 
+            Mock Get-DbcConfigValue &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;$Option&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt; -ParameterFilter &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;$Name&lt;/span&gt; -like &lt;span class=&quot;s2&quot;&gt;&quot;policy.pageverify&quot;&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
+            &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;Get-ConfigForPageVerifyCheck&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;.PageVerify | Should -Be &lt;span class=&quot;nv&quot;&gt;$Option&lt;/span&gt;
+        &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
+        
+        It &lt;span class=&quot;s2&quot;&gt;&quot;Throw exception when policy.pageverify is set to unsupported option&quot;&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
+            Mock Get-DbcConfigValue &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;NOT_SUPPORTED_OPTION&quot;&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt; -ParameterFilter &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;$Name&lt;/span&gt; -like &lt;span class=&quot;s2&quot;&gt;&quot;policy.pageverify&quot;&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
+            &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt; Get-ConfigForPageVerifyCheck &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt; | Should -Throw 
+        &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
+    &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
+
+    Context &lt;span class=&quot;s2&quot;&gt;&quot;Test the confirm function&quot;&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
+        Mock Get-DbcConfigValue &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;CHECKSUM&quot;&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt; -ParameterFilter &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;$Name&lt;/span&gt; -like &lt;span class=&quot;s2&quot;&gt;&quot;policy.pageverify&quot;&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
+
+        &lt;span class=&quot;nv&quot;&gt;$testConfig&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; Get-ConfigForPageVerifyCheck 
+
+        It &lt;span class=&quot;s2&quot;&gt;&quot;The test should pass when the PageVerify is as configured&quot;&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
+            @&lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
+                PageVerify &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;CHECKSUM&quot;&lt;/span&gt;
+            &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt; | 
+                Confirm-PageVerify -With &lt;span class=&quot;nv&quot;&gt;$testConfig&lt;/span&gt; 
+        &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
+
+        It &lt;span class=&quot;s2&quot;&gt;&quot;The test should fail when the PageVerify is not as configured&quot;&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
+            &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
+                @&lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
+                    PageVerify &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;NONE&quot;&lt;/span&gt;
+                &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt; | 
+                    Confirm-PageVerify -With &lt;span class=&quot;nv&quot;&gt;$testConfig&lt;/span&gt;
+            &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt; | Should -Throw 
+        &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
+    &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
+&lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/tbody&gt;&lt;/table&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;And finally when we know the configuration and confirm functions are working as expected, the &lt;strong&gt;checks\Database.Tests.ps1&lt;/strong&gt; which provides the definition of the check could be as simple as:&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-powershell&quot; data-lang=&quot;powershell&quot;&gt;&lt;table class=&quot;rouge-table&quot;&gt;&lt;tbody&gt;&lt;tr&gt;&lt;td class=&quot;gutter gl&quot;&gt;&lt;pre class=&quot;lineno&quot;&gt;1
+2
+3
+4
+5
+6
+7
+8
+9
+&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;code&quot;&gt;&lt;pre&gt;&lt;span class=&quot;nv&quot;&gt;$config&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; Get-ConfigForPageVerifyCheck                  &lt;span class=&quot;c1&quot;&gt;# Configure&lt;/span&gt;
+@&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;Get-Instance&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;.ForEach&lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;                                &lt;span class=&quot;c1&quot;&gt;# Collect on instance level&lt;/span&gt;
+    @&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;Get-DatabaseInfo -SqlInstance &lt;span class=&quot;nv&quot;&gt;$psitem&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;.ForEach&lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;   &lt;span class=&quot;c1&quot;&gt;# Collect on database level&lt;/span&gt;
+        It &lt;span class=&quot;s2&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;$(&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;$psitem&lt;/span&gt;.Database&lt;span class=&quot;k&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt; should have page verify set to &lt;/span&gt;&lt;span class=&quot;k&quot;&gt;$(&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;$config&lt;/span&gt;.PageVerify&lt;span class=&quot;k&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
+            &lt;span class=&quot;c1&quot;&gt;# Confirm environmental details (in $psitem)&lt;/span&gt;
+            &lt;span class=&quot;nv&quot;&gt;$psitem&lt;/span&gt; | Confirm-PageVerify -With &lt;span class=&quot;nv&quot;&gt;$config&lt;/span&gt; -Because &lt;span class=&quot;s2&quot;&gt;&quot;Page verify helps SQL Server to detect corruption&quot;&lt;/span&gt;
+        &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
+    &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
+&lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/tbody&gt;&lt;/table&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;But to make it display better, and to provide more information to the curious sysadmin who would like to know what the check does we do this instead:&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-powershell&quot; data-lang=&quot;powershell&quot;&gt;&lt;table class=&quot;rouge-table&quot;&gt;&lt;tbody&gt;&lt;tr&gt;&lt;td class=&quot;gutter gl&quot;&gt;&lt;pre class=&quot;lineno&quot;&gt;1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;code&quot;&gt;&lt;pre&gt;Describe &lt;span class=&quot;s2&quot;&gt;&quot;Page Verify Settings Check&quot;&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
+    &lt;span class=&quot;nv&quot;&gt;$config&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; Get-SettingsForPageVerifyCheck                    &lt;span class=&quot;c1&quot;&gt;# Configure&lt;/span&gt;
+    @&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;Get-Instance&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;.ForEach&lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;                                    &lt;span class=&quot;c1&quot;&gt;# Collect on instance level&lt;/span&gt;
+        Context &lt;span class=&quot;s2&quot;&gt;&quot;Testing page verify setting on &lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;$psitem&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;          
+            @&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;Get-DatabaseInfo -SqlInstance &lt;span class=&quot;nv&quot;&gt;$psitem&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;.ForEach&lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;   &lt;span class=&quot;c1&quot;&gt;# Collect on database level&lt;/span&gt;
+                It &lt;span class=&quot;s2&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;$(&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;$psitem&lt;/span&gt;.Database&lt;span class=&quot;k&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt; should have page verify set to &lt;/span&gt;&lt;span class=&quot;k&quot;&gt;$(&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;$config&lt;/span&gt;.PageVerify&lt;span class=&quot;k&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
+                    &lt;span class=&quot;c1&quot;&gt;# Confirm environmental details (in $psitem)&lt;/span&gt;
+                    &lt;span class=&quot;nv&quot;&gt;$psitem&lt;/span&gt; | Confirm-PageVerify -With &lt;span class=&quot;nv&quot;&gt;$config&lt;/span&gt; -Because &lt;span class=&quot;s2&quot;&gt;&quot;Page verify helps SQL Server to detect corruption&quot;&lt;/span&gt;
+                &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
+            &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
+        &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
+    &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
+&lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/tbody&gt;&lt;/table&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;If somebody is simply curious what the check checks, and why, all he has to do is to read the strings here or in the Pester output&lt;/p&gt;
+&lt;ul&gt;
+  &lt;li&gt;“Page Verify Settings Check”&lt;/li&gt;
+  &lt;li&gt;“Testing page verify setting on &lt;your instance=&quot;&quot; here=&quot;&quot;&gt;&quot;&lt;/your&gt;&lt;/li&gt;
+  &lt;li&gt;“Each &lt;Database&gt; should have page verify set to &lt;Expected Value=&quot;&quot;&gt;&quot;&lt;/Expected&gt;&lt;/Database&gt;&lt;/li&gt;
+  &lt;li&gt;“Because page verify helps SQL Server to detect corruption”&lt;/li&gt;
+&lt;/ul&gt;</content><author><name></name></author><summary type="html">Unit Test Your Environments</summary></entry><entry><title type="html">DBA blogging with jekyll on GitHub Pages</title><link href="http://dbain.wales/about/jekyll-on-GitHub-Pages" rel="alternate" type="text/html" title="DBA blogging with jekyll on GitHub Pages" /><published>2018-04-07T07:00:00+01:00</published><updated>2018-04-07T07:00:00+01:00</updated><id>http://dbain.wales/about/jekyll-how-to</id><content type="html" xml:base="http://dbain.wales/about/jekyll-on-GitHub-Pages">&lt;h3 id=&quot;i-decided-to-start-blogging-again&quot;&gt;I decided to start blogging again&lt;/h3&gt;
 
 &lt;p&gt;I had few prerequisits:&lt;/p&gt;
 &lt;ul&gt;
