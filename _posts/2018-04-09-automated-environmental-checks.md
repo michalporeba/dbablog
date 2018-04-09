@@ -1,6 +1,6 @@
 ---
 layout: post
-title:  "Automated environmental checks with Pester"
+title:  "Automated Environmental Checks"
 date:   2018-04-09 22:42:22 +0100
 categories: dbachecks PowerShell Pester
 permalink: "about/environmental-checks"
