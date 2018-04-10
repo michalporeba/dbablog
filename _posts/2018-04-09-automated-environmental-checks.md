@@ -12,7 +12,7 @@ permalink: "about/environmental-checks"
 
 It's all ~~very~~ easy when you work with 'cloud' virtual environments that wait to ingest next config file and reconfigure themselves automatically. But what if you look after a more traditional setup? Exchange, Share Point, SQL Server clusters hosted on premises on Windows Servers, rather than Docker pods? What if you are not the only admin and people do go in there and make changes to live systems' configuration, perhaps even for good reasons? 
 
-I'd say you do the same as any decent software developer would do when asked to take care of on old, perhaps unfashionable, non-microservice code base: When asked to change anything, start with writing unit tests so you know at the very least you will not make it any worse. That's right, even if you cannot define your configuration with code, you can test it with it. PowerShell and [Pester](https://github.com/pester/Pester) are great tools to do so. And if you happen to be responsible for SQL Servers, then there are unit tests already written for you, available as the [dbachecks](https://dbachecks.io) module. It's MIT licensed. Go, install it and use it. 
+I'd say you do the same as any decent software developer would do when asked to take care of an old, perhaps unfashionable, non-microservice code base: When asked to change anything, start with writing unit tests so you know at the very least you will not make it any worse. That's right, even if you cannot define your configuration with code, you can test it with it. PowerShell and [Pester](https://github.com/pester/Pester) are great tools to do so. And if you happen to be responsible for SQL Servers, then there are unit tests already written for you, available as the [dbachecks](https://dbachecks.io) module. It's MIT licensed. Go, install it and use it. 
 
 ### PowerShell and Pester
 
@@ -26,7 +26,7 @@ Unit tests typically follow the AAA pattern.
 * **Assert** that the outcome matches your expectations
 
 In unit testing the objective is to test the functionality detached (as much as practical) from the outside environment. Obviously, that's something that cannot be done when doing environmental checks. After all, the environments is what we are testing, so the AAA becomes CCC
-* **Configure** your context, get the configuration for the the environment you are validating
+* **Configure** your context, get the configuration for the environment you are validating
 * **Collect** the data about your environment
 * **Confirm** the real life matches your expectations
 
@@ -55,7 +55,7 @@ function Confirm-PageVerify {
 }
 {% endhighlight %}
 
-But to be able to test configuration input and to make the Confirm function fit better with the rest of the framework w do
+But to be able to test configuration input and to make the Confirm function fit better with the rest of the framework we do
 {% highlight PowerShell linenos %}
 function Get-ConfigForPageVerifyCheck {
     $pageverifyValidValues = @("NONE", "TORN_PAGE_DETECTION", "CHECKSUM")
