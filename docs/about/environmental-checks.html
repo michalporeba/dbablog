@@ -66,7 +66,7 @@
 
 <p>It’s all <del>very</del> easy when you work with ‘cloud’ virtual environments that wait to ingest next config file and reconfigure themselves automatically. But what if you look after a more traditional setup? Exchange, Share Point, SQL Server clusters hosted on premises on Windows Servers, rather than Docker pods? What if you are not the only admin and people do go in there and make changes to live systems’ configuration, perhaps even for good reasons?</p>
 
-<p>I’d say you do the same as any decent software developer would do when asked to take care of on old, perhaps unfashionable, non-microservice code base: When asked to change anything, start with writing unit tests so you know at the very least you will not make it any worse. That’s right, even if you cannot define your configuration with code, you can test it with it. PowerShell and <a href="https://github.com/pester/Pester">Pester</a> are great tools to do so. And if you happen to be responsible for SQL Servers, then there are unit tests already written for you, available as the <a href="https://dbachecks.io">dbachecks</a> module. It’s MIT licensed. Go, install it and use it.</p>
+<p>I’d say you do the same as any decent software developer would do when asked to take care of an old, perhaps unfashionable, non-microservice code base: When asked to change anything, start with writing unit tests so you know at the very least you will not make it any worse. That’s right, even if you cannot define your configuration with code, you can test it with it. PowerShell and <a href="https://github.com/pester/Pester">Pester</a> are great tools to do so. And if you happen to be responsible for SQL Servers, then there are unit tests already written for you, available as the <a href="https://dbachecks.io">dbachecks</a> module. It’s MIT licensed. Go, install it and use it.</p>
 
 <h3 id="powershell-and-pester">PowerShell and Pester</h3>
 
@@ -83,7 +83,7 @@
 
 <p>In unit testing the objective is to test the functionality detached (as much as practical) from the outside environment. Obviously, that’s something that cannot be done when doing environmental checks. After all, the environments is what we are testing, so the AAA becomes CCC</p>
 <ul>
-  <li><strong>Configure</strong> your context, get the configuration for the the environment you are validating</li>
+  <li><strong>Configure</strong> your context, get the configuration for the environment you are validating</li>
   <li><strong>Collect</strong> the data about your environment</li>
   <li><strong>Confirm</strong> the real life matches your expectations</li>
 </ul>
@@ -123,7 +123,7 @@
     <span class="o">}</span>
 <span class="o">}</span></pre></td></tr></tbody></table></code></pre></figure>
 
-<p>But to be able to test configuration input and to make the Confirm function fit better with the rest of the framework w do</p>
+<p>But to be able to test configuration input and to make the Confirm function fit better with the rest of the framework we do</p>
 
 <figure class="highlight"><pre><code class="language-powershell" data-lang="powershell"><table class="rouge-table"><tbody><tr><td class="gutter gl"><pre class="lineno">1
 2
