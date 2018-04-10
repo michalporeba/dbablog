@@ -165,8 +165,18 @@ If somebody is simply curious what the check checks, and why, all he has to do i
 * "Each <Database> should have page verify set to <Expected Value>"
 * "Because page verify helps SQL Server to detect corruption"
 
-all configuration should be inside the Confirm function
-that way as much logic as possible is tested
+### The Small Print
 
-one step to 'desired state configuration'
-mention ms dsc
+To make sure the checks are easy to read and have as high as practical test coverage I came up with a number of guidelines 
+
+* Try to unit test your checks. But it is better to have a manually tested check than don't have one at all.
+* Prioritise readability in the checks' file. Assume that is the file for non-developer to read.
+* Confirm-* functions should have -Because parameter which value is defined in the checks file, rather than have -Because in the Confirm-* function directly. That improves readability.
+* While Pester's test cases might be useful for unit testing our checks, they should be avoided in the checks themselves. The code is less complex to read to an untrained eye.
+* The checks' file should have as little logic as possible. The collection of data has to happen here, and it will include typically some looping and parameter passing. That is unavoidable, but try to avoid what you can, definitely the conditional bits like `if` and `else` should not be there. Put them in the `Confirm-*` function and validate it with unit tests. 
+* If the test is not applicable for a resource in a certain condition, it is better to get that resource and skip that test from inside the Confirm-* function. That way we know nothing is missed, and the skipping logic can be unit tested as well. OK, that would be the ideal solution, but unfortunately it is currently impossible in Pester, so instead you can mark the test as inconclusive using Set-TestInconclusive. (Check the [GitHub issue](https://github.com/pester/Pester/issues/1022) I raised about that extra functionality).
+
+### Next Steps
+
+Go and write some environmental checks for your servers!
+If you work with SQL Servers, get [dbachecks](https://dbachecks.io) and try them out. 

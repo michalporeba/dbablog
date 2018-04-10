@@ -1,14 +1,14 @@
-<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="3.7.3">Jekyll</generator><link href="http://dbain.wales/feed.xml" rel="self" type="application/atom+xml" /><link href="http://dbain.wales/" rel="alternate" type="text/html" /><updated>2018-04-09T22:47:25+01:00</updated><id>http://dbain.wales/</id><title type="html">DBA in Wales</title><subtitle>I am a DBA in Wales who likes to code with C# and PowerShell,  play music with Ruby, speak obscure languages  and discover places most people don't ever go to.</subtitle><entry><title type="html">Automated Environmental Checks</title><link href="http://dbain.wales/about/environmental-checks" rel="alternate" type="text/html" title="Automated Environmental Checks" /><published>2018-04-09T22:42:22+01:00</published><updated>2018-04-09T22:42:22+01:00</updated><id>http://dbain.wales/about/automated-environmental-checks</id><content type="html" xml:base="http://dbain.wales/about/environmental-checks">&lt;h3 id=&quot;unit-test-your-environments&quot;&gt;Unit Test Your Environments&lt;/h3&gt;
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="3.7.3">Jekyll</generator><link href="http://dbain.wales/feed.xml" rel="self" type="application/atom+xml" /><link href="http://dbain.wales/" rel="alternate" type="text/html" /><updated>2018-04-10T17:59:05+01:00</updated><id>http://dbain.wales/</id><title type="html">DBA in Wales</title><subtitle>I am a DBA in Wales who likes to code with C# and PowerShell,  play music with Ruby, speak obscure languages  and discover places most people don't ever go to.</subtitle><entry><title type="html">Automated Environmental Checks</title><link href="http://dbain.wales/about/environmental-checks" rel="alternate" type="text/html" title="Automated Environmental Checks" /><published>2018-04-09T22:42:22+01:00</published><updated>2018-04-09T22:42:22+01:00</updated><id>http://dbain.wales/about/automated-environmental-checks</id><content type="html" xml:base="http://dbain.wales/about/environmental-checks">&lt;h3 id=&quot;unit-test-your-environments&quot;&gt;Unit Test Your Environments&lt;/h3&gt;
 
-&lt;p&gt;&lt;a href=&quot;https://en.wikipedia.org/wiki/Infrastructure_as_Code&quot;&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;Infrastructure as Code&lt;/code&gt;&lt;/a&gt; has been around for quite some time now. There are many clever definitions one can easily find, but for me it is simply an extension of good codinging (or perhaps DevOpsing) principals. You don’t go into production systems and keep making changes until it works. You write your code, you check it into your favourite repository, then there is some process that will automatically test it, and eventually it will make its way to production environment. That way if you make a mistake, you can see where you made it and if it happens to work just fine, you can easily do it again, and again, and again as you scale out.&lt;/p&gt;
+&lt;p&gt;&lt;a href=&quot;https://en.wikipedia.org/wiki/Infrastructure_as_Code&quot;&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;Infrastructure as Code&lt;/code&gt;&lt;/a&gt; has been around for quite some time now. There are many clever definitions one can easily find, but for me it is simply an extension of good coding (or perhaps DevOpsing) principals. You don’t go into production systems and keep making changes until it works. You write your code, you check it into your favourite repository, then there is some process that will automatically test it, and eventually it will make its way to production environment. That way if you make a mistake, you can see where you made it and if it happens to work just fine, you can easily do it again, and again, and again as you scale out.&lt;/p&gt;
 
-&lt;p&gt;It’s all &lt;del&gt;very&lt;/del&gt; easy when you work with ‘cloud’ virtual environments that wait to ingest next config file and reconfigure themselves automatically. But what if you look after a more traditional setup? Exchange, Share Point, SQL Server clusters hosted on premises on Windows Servers, rather than Docker pods? What if your are not the only admin and people do go in there and make changes to live systems’ configuration, perhaps even for good reasons?&lt;/p&gt;
+&lt;p&gt;It’s all &lt;del&gt;very&lt;/del&gt; easy when you work with ‘cloud’ virtual environments that wait to ingest next config file and reconfigure themselves automatically. But what if you look after a more traditional setup? Exchange, Share Point, SQL Server clusters hosted on premises on Windows Servers, rather than Docker pods? What if you are not the only admin and people do go in there and make changes to live systems’ configuration, perhaps even for good reasons?&lt;/p&gt;
 
 &lt;p&gt;I’d say you do the same as any decent software developer would do when asked to take care of on old, perhaps unfashionable, non-microservice code base: When asked to change anything, start with writing unit tests so you know at the very least you will not make it any worse. That’s right, even if you cannot define your configuration with code, you can test it with it. PowerShell and &lt;a href=&quot;https://github.com/pester/Pester&quot;&gt;Pester&lt;/a&gt; are great tools to do so. And if you happen to be responsible for SQL Servers, then there are unit tests already written for you, available as the &lt;a href=&quot;https://dbachecks.io&quot;&gt;dbachecks&lt;/a&gt; module. It’s MIT licensed. Go, install it and use it.&lt;/p&gt;
 
 &lt;h3 id=&quot;powershell-and-pester&quot;&gt;PowerShell and Pester&lt;/h3&gt;
 
-&lt;p&gt;Pester is an open source test and mock framework for PowerShell. All modern Windows servers have PowerShell, so let’s use it. &lt;a href=&quot;http://jakubjares.com&quot;&gt;Jakub Jareš&lt;/a&gt; one of the contributors to the Pester project has written an &lt;a href=&quot;http://jakubjares.com/2017/12/07/testing-your-environment-tests/&quot;&gt;excelent blog post&lt;/a&gt; about environmental checks, how to write them in Pester and why you should test you &lt;del&gt;tests&lt;/del&gt; checks. That was my starting point when I took it on myself to improve dbachecks. If you haven’t yet, go and read it. I will try not to repeat what Jakub wrote there, but rather where I got from there while trying to find a way to structure checks in such a way, that they are both testable, and easily understood by non-developer sysadmins.&lt;/p&gt;
+&lt;p&gt;Pester is an open source test and mock framework for PowerShell. All modern Windows servers have PowerShell, so let’s use it. &lt;a href=&quot;http://jakubjares.com&quot;&gt;Jakub Jareš&lt;/a&gt; one of the contributors to the Pester project has written an &lt;a href=&quot;http://jakubjares.com/2017/12/07/testing-your-environment-tests/&quot;&gt;excellent blog post&lt;/a&gt; about environmental checks, how to write them in Pester and why you should test you &lt;del&gt;tests&lt;/del&gt; checks. That was my starting point when I took it on myself to improve dbachecks. If you haven’t yet, go and read it. I will try not to repeat what Jakub wrote there, but rather where I got from there while trying to find a way to structure checks in such a way, that they are both testable, and easily understood by non-developer sysadmins.&lt;/p&gt;
 
 &lt;h3 id=&quot;the-difference&quot;&gt;The Difference&lt;/h3&gt;
 
@@ -19,7 +19,7 @@
   &lt;li&gt;&lt;strong&gt;Assert&lt;/strong&gt; that the outcome matches your expectations&lt;/li&gt;
 &lt;/ul&gt;
 
-&lt;p&gt;In unit testing the objective is to test the functionality detached (as much as practical) from the outside environment. Obviously that’s something that cannot be done when doing environmental checks. After all, the environments is what we are testing, so the AAA becomes CCC&lt;/p&gt;
+&lt;p&gt;In unit testing the objective is to test the functionality detached (as much as practical) from the outside environment. Obviously, that’s something that cannot be done when doing environmental checks. After all, the environments is what we are testing, so the AAA becomes CCC&lt;/p&gt;
 &lt;ul&gt;
   &lt;li&gt;&lt;strong&gt;Configure&lt;/strong&gt; your context, get the configuration for the the environment you are validating&lt;/li&gt;
   &lt;li&gt;&lt;strong&gt;Collect&lt;/strong&gt; the data about your environment&lt;/li&gt;
@@ -28,8 +28,8 @@
 
 &lt;p&gt;Describing it like that stopped me going in circles thinking how do I test my tests. Now I’m testing my checks and to do that I follow the AAA pattern.&lt;/p&gt;
 &lt;ul&gt;
-  &lt;li&gt;I &lt;em&gt;arrange&lt;/em&gt; my test by mocking my &lt;em&gt;configure&lt;/em&gt; and &lt;em&gt;collect&lt;/em&gt; actions&lt;/li&gt;
-  &lt;li&gt;I &lt;em&gt;act&lt;/em&gt; by calling the &lt;em&gt;confirm&lt;/em&gt; action passing it the mocked details&lt;/li&gt;
+  &lt;li&gt;I &lt;em&gt;arrange&lt;/em&gt; my test by mocking my &lt;em&gt;configure&lt;/em&gt; and &lt;em&gt;collect&lt;/em&gt; functions&lt;/li&gt;
+  &lt;li&gt;I &lt;em&gt;act&lt;/em&gt; by calling the &lt;em&gt;confirm&lt;/em&gt; function passing it the mocked details&lt;/li&gt;
   &lt;li&gt;I &lt;em&gt;assert&lt;/em&gt; the outcome by checking if the &lt;em&gt;confirm&lt;/em&gt; action behaved as expected&lt;/li&gt;
 &lt;/ul&gt;
 
@@ -37,9 +37,9 @@
 
 &lt;h3 id=&quot;code-examples&quot;&gt;Code Examples&lt;/h3&gt;
 
-&lt;p&gt;Typically my testable check has 4 components in 3 files. Here is an example from the dbachecks checking Page Verify option.&lt;/p&gt;
+&lt;p&gt;Typically, my testable check has 4 components in 3 files. Here is an example from the dbachecks’ Page Verify check.&lt;/p&gt;
 
-&lt;p&gt;First we need to write the confirm function and its configuration 
+&lt;p&gt;First, we need to write the confirm function and its configuration 
 &lt;strong&gt;confirms\Database.PageVerify.ps1&lt;/strong&gt; which could be as simple as:&lt;/p&gt;
 
 &lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-powershell&quot; data-lang=&quot;powershell&quot;&gt;&lt;table class=&quot;rouge-table&quot;&gt;&lt;tbody&gt;&lt;tr&gt;&lt;td class=&quot;gutter gl&quot;&gt;&lt;pre class=&quot;lineno&quot;&gt;1
@@ -198,7 +198,7 @@
     &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
 &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/tbody&gt;&lt;/table&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
 
-&lt;p&gt;And finally when we know the configuration and confirm functions are working as expected, the &lt;strong&gt;checks\Database.Tests.ps1&lt;/strong&gt; which provides the definition of the check could be as simple as:&lt;/p&gt;
+&lt;p&gt;And finally, when we know the configuration and confirm functions are working as expected, the &lt;strong&gt;checks\Database.Tests.ps1&lt;/strong&gt; which provides the definition of the check could be as simple as:&lt;/p&gt;
 
 &lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-powershell&quot; data-lang=&quot;powershell&quot;&gt;&lt;table class=&quot;rouge-table&quot;&gt;&lt;tbody&gt;&lt;tr&gt;&lt;td class=&quot;gutter gl&quot;&gt;&lt;pre class=&quot;lineno&quot;&gt;1
 2
@@ -254,7 +254,25 @@
   &lt;li&gt;“Testing page verify setting on &lt;your instance=&quot;&quot; here=&quot;&quot;&gt;&quot;&lt;/your&gt;&lt;/li&gt;
   &lt;li&gt;“Each &lt;Database&gt; should have page verify set to &lt;Expected Value=&quot;&quot;&gt;&quot;&lt;/Expected&gt;&lt;/Database&gt;&lt;/li&gt;
   &lt;li&gt;“Because page verify helps SQL Server to detect corruption”&lt;/li&gt;
-&lt;/ul&gt;</content><author><name></name></author><summary type="html">Unit Test Your Environments</summary></entry><entry><title type="html">DBA blogging with jekyll on GitHub Pages</title><link href="http://dbain.wales/about/jekyll-on-GitHub-Pages" rel="alternate" type="text/html" title="DBA blogging with jekyll on GitHub Pages" /><published>2018-04-07T07:00:00+01:00</published><updated>2018-04-07T07:00:00+01:00</updated><id>http://dbain.wales/about/jekyll-how-to</id><content type="html" xml:base="http://dbain.wales/about/jekyll-on-GitHub-Pages">&lt;h3 id=&quot;i-decided-to-start-blogging-again&quot;&gt;I decided to start blogging again&lt;/h3&gt;
+&lt;/ul&gt;
+
+&lt;h3 id=&quot;the-small-print&quot;&gt;The Small Print&lt;/h3&gt;
+
+&lt;p&gt;To make sure the checks are easy to read and have as high as practical test coverage I came up with a number of guidelines&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;Try to unit test your checks. But it is better to have a manually tested check than don’t have one at all.&lt;/li&gt;
+  &lt;li&gt;Prioritise readability in the checks’ file. Assume that is the file for non-developer to read.&lt;/li&gt;
+  &lt;li&gt;Confirm-* functions should have -Because parameter which value is defined in the checks file, rather than have -Because in the Confirm-* function directly. That improves readability.&lt;/li&gt;
+  &lt;li&gt;While Pester’s test cases might be useful for unit testing our checks, they should be avoided in the checks themselves. The code is less complex to read to an untrained eye.&lt;/li&gt;
+  &lt;li&gt;The checks’ file should have as little logic as possible. The collection of data has to happen here, and it will include typically some looping and parameter passing. That is unavoidable, but try to avoid what you can, definitely the conditional bits like &lt;code class=&quot;highlighter-rouge&quot;&gt;if&lt;/code&gt; and &lt;code class=&quot;highlighter-rouge&quot;&gt;else&lt;/code&gt; should not be there. Put them in the &lt;code class=&quot;highlighter-rouge&quot;&gt;Confirm-*&lt;/code&gt; function and validate it with unit tests.&lt;/li&gt;
+  &lt;li&gt;If the test is not applicable for a resource in a certain condition, it is better to get that resource and skip that test from inside the Confirm-* function. That way we know nothing is missed, and the skipping logic can be unit tested as well. OK, that would be the ideal solution, but unfortunately it is currently impossible in Pester, so instead you can mark the test as inconclusive using Set-TestInconclusive. (Check the &lt;a href=&quot;https://github.com/pester/Pester/issues/1022&quot;&gt;GitHub issue&lt;/a&gt; I raised about that extra functionality).&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h3 id=&quot;next-steps&quot;&gt;Next Steps&lt;/h3&gt;
+
+&lt;p&gt;Go and write some environmental checks for your servers!
+If you work with SQL Servers, get &lt;a href=&quot;https://dbachecks.io&quot;&gt;dbachecks&lt;/a&gt; and try them out.&lt;/p&gt;</content><author><name></name></author><summary type="html">Unit Test Your Environments</summary></entry><entry><title type="html">DBA blogging with jekyll on GitHub Pages</title><link href="http://dbain.wales/about/jekyll-on-GitHub-Pages" rel="alternate" type="text/html" title="DBA blogging with jekyll on GitHub Pages" /><published>2018-04-07T07:00:00+01:00</published><updated>2018-04-07T07:00:00+01:00</updated><id>http://dbain.wales/about/jekyll-how-to</id><content type="html" xml:base="http://dbain.wales/about/jekyll-on-GitHub-Pages">&lt;h3 id=&quot;i-decided-to-start-blogging-again&quot;&gt;I decided to start blogging again&lt;/h3&gt;
 
 &lt;p&gt;I had few prerequisits:&lt;/p&gt;
 &lt;ul&gt;
