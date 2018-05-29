@@ -1,4 +1,65 @@
-<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="3.7.3">Jekyll</generator><link href="http://dbain.wales/feed.xml" rel="self" type="application/atom+xml" /><link href="http://dbain.wales/" rel="alternate" type="text/html" /><updated>2018-04-10T20:02:10+01:00</updated><id>http://dbain.wales/</id><title type="html">DBA in Wales</title><subtitle>I am a DBA in Wales who likes to code with C# and PowerShell,  play music with Ruby, speak obscure languages  and discover places most people don't ever go to.</subtitle><entry><title type="html">Automated Environmental Checks</title><link href="http://dbain.wales/about/environmental-checks" rel="alternate" type="text/html" title="Automated Environmental Checks" /><published>2018-04-09T22:42:22+01:00</published><updated>2018-04-09T22:42:22+01:00</updated><id>http://dbain.wales/about/automated-environmental-checks</id><content type="html" xml:base="http://dbain.wales/about/environmental-checks">&lt;h3 id=&quot;unit-test-your-environments&quot;&gt;Unit Test Your Environments&lt;/h3&gt;
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="3.7.3">Jekyll</generator><link href="http://dbain.wales/feed.xml" rel="self" type="application/atom+xml" /><link href="http://dbain.wales/" rel="alternate" type="text/html" /><updated>2018-05-29T21:59:22+01:00</updated><id>http://dbain.wales/</id><title type="html">DBA in Wales</title><subtitle>I am a DBA in Wales who likes to code with C# and PowerShell,  play music with Ruby, speak obscure languages  and discover places most people don't ever go to.</subtitle><entry><title type="html">DB Stuck in SINGLE USER Mode</title><link href="http://dbain.wales/about/db-stuck-single-user-mode" rel="alternate" type="text/html" title="DB Stuck in SINGLE USER Mode" /><published>2018-05-29T20:00:00+01:00</published><updated>2018-05-29T20:00:00+01:00</updated><id>http://dbain.wales/about/db-stuck-in-single-user-mode</id><content type="html" xml:base="http://dbain.wales/about/db-stuck-single-user-mode">&lt;h3 id=&quot;some-background&quot;&gt;Some Background&lt;/h3&gt;
+&lt;p&gt;&lt;em&gt;TLDR? Solution is at the bottom of this page.&lt;/em&gt;&lt;/p&gt;
+
+&lt;p&gt;The internet is full of examples how to close all active connections to a database by doing something like&lt;/p&gt;
+
+&lt;div class=&quot;language-sql highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;table class=&quot;rouge-table&quot;&gt;&lt;tbody&gt;&lt;tr&gt;&lt;td class=&quot;rouge-gutter gl&quot;&gt;&lt;pre class=&quot;lineno&quot;&gt;1
+2
+3
+&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;rouge-code&quot;&gt;&lt;pre&gt;&lt;span class=&quot;n&quot;&gt;use&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;master&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;alter&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;database&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;somedb&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;set&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;single_user&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;with&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;rollback&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;immediate&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;alter&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;database&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;somedb&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;set&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;multi_user&lt;/span&gt; 
+&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/tbody&gt;&lt;/table&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;When you try it on your development machine it works just fine, when you do it in QA it is typically OK too, but one day you realise that you have made a mistake, that the &lt;code class=&quot;highlighter-rouge&quot;&gt;use master&lt;/code&gt; should have been &lt;code class=&quot;highlighter-rouge&quot;&gt;use somedb&lt;/code&gt; and now you have a production database in a single user mode, there is only one connection allowed at the time and yours is not the one. Worse, there are hundreds of clients, all queueing to be the only user!&lt;/p&gt;
+
+&lt;p&gt;You cannot connect to the database&lt;/p&gt;
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;table class=&quot;rouge-table&quot;&gt;&lt;tbody&gt;&lt;tr&gt;&lt;td class=&quot;rouge-gutter gl&quot;&gt;&lt;pre class=&quot;lineno&quot;&gt;1
+2
+&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;rouge-code&quot;&gt;&lt;pre&gt;Msg 924, Level 14, State 1, Line 1
+Database 'somedb' is already open and can only have one user at a time. 
+&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/tbody&gt;&lt;/table&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;Trying to do anything that starts with &lt;code class=&quot;highlighter-rouge&quot;&gt;alter database ...&lt;/code&gt; will fail too&lt;/p&gt;
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;table class=&quot;rouge-table&quot;&gt;&lt;tbody&gt;&lt;tr&gt;&lt;td class=&quot;rouge-gutter gl&quot;&gt;&lt;pre class=&quot;lineno&quot;&gt;1
+2
+3
+4
+&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;rouge-code&quot;&gt;&lt;pre&gt;Msg 5064, Level 16, State 1, Line 1
+Changes to the state or options of database 'somedb' cannot be made at this time. The database is in single-user mode, and a user is currently connected to it. 
+Msg 5069, Level 16, State 1, Line 1
+ALTER DATABASE statement failed. 
+&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/tbody&gt;&lt;/table&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;Trying to get some ‘authority’ over the server by connecting as the admin (DAC) is of no use either.&lt;/p&gt;
+
+&lt;p&gt;So what can be done? If you happen to have one sql login per database (or a handful) then you can revoke that logins permission to log in, but then you have to make sure you grant it back, to all of the ones you revoked it from. It would work but typically either there are too many logins that would have to have rights revoked or there are too few logins and revoking any rights would make the outage wider than it already is.&lt;/p&gt;
+
+&lt;p&gt;A fairly obvious solution is to shut down the server and bring it back up in the single user mode. The &lt;code class=&quot;highlighter-rouge&quot;&gt;Sqlservr.exe -m &lt;/code&gt; option. Then only one admin user will be allowed to connect to the instance, which will allow you to change the permissions of the affected database. The only problem is, that we were talking about a problem which affects almost exclusively busy production server. Shutting it down to fix just one database sounds like an overkill and I bet there will be a lot of explaining to do afterwards.&lt;/p&gt;
+
+&lt;h3 id=&quot;solution&quot;&gt;Solution&lt;/h3&gt;
+
+&lt;p&gt;What I found to work quite well is to open two sessions. In the first one I execute a query that will constantly attempt to connect to the database which is stuck in the single suer mode&lt;/p&gt;
+
+&lt;div class=&quot;language-sql highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;table class=&quot;rouge-table&quot;&gt;&lt;tbody&gt;&lt;tr&gt;&lt;td class=&quot;rouge-gutter gl&quot;&gt;&lt;pre class=&quot;lineno&quot;&gt;1
+2
+&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;rouge-code&quot;&gt;&lt;pre&gt;&lt;span class=&quot;n&quot;&gt;use&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;somedb&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;go&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;200&lt;/span&gt;
+&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/tbody&gt;&lt;/table&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;That ensures that I’ve got a session that constantly is trying to connect. Then in the other session I will look up the SPID of the session currently connected and kill it. Obviously that assumes that I know my system, and I know that the application will recover if I kill the session.&lt;/p&gt;
+
+&lt;div class=&quot;language-sql highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;table class=&quot;rouge-table&quot;&gt;&lt;tbody&gt;&lt;tr&gt;&lt;td class=&quot;rouge-gutter gl&quot;&gt;&lt;pre class=&quot;lineno&quot;&gt;1
+2
+&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;rouge-code&quot;&gt;&lt;pre&gt;&lt;span class=&quot;k&quot;&gt;select&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;spid&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;from&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;sys&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;sysprocesses&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;where&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;dbid&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;db_id&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;'somedb'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;kill&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;spid&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt;
+&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/tbody&gt;&lt;/table&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;Do it a couple of times making sure you don’t kill the spid of the first session and your first session should be connected to the database. Now all that is left is to finally do&lt;/p&gt;
+
+&lt;div class=&quot;language-sql highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;table class=&quot;rouge-table&quot;&gt;&lt;tbody&gt;&lt;tr&gt;&lt;td class=&quot;rouge-gutter gl&quot;&gt;&lt;pre class=&quot;lineno&quot;&gt;1
+&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;rouge-code&quot;&gt;&lt;pre&gt;&lt;span class=&quot;k&quot;&gt;alter&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;database&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;somedb&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;set&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;multi_user&lt;/span&gt;
+&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/tbody&gt;&lt;/table&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;</content><author><name></name></author><summary type="html">Some Background TLDR? Solution is at the bottom of this page.</summary></entry><entry><title type="html">Automated Environmental Checks</title><link href="http://dbain.wales/about/environmental-checks" rel="alternate" type="text/html" title="Automated Environmental Checks" /><published>2018-04-09T22:42:22+01:00</published><updated>2018-04-09T22:42:22+01:00</updated><id>http://dbain.wales/about/automated-environmental-checks</id><content type="html" xml:base="http://dbain.wales/about/environmental-checks">&lt;h3 id=&quot;unit-test-your-environments&quot;&gt;Unit Test Your Environments&lt;/h3&gt;
 
 &lt;p&gt;&lt;a href=&quot;https://en.wikipedia.org/wiki/Infrastructure_as_Code&quot;&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;Infrastructure as Code&lt;/code&gt;&lt;/a&gt; has been around for quite some time now. There are many clever definitions one can easily find, but for me it is simply an extension of good coding (or perhaps DevOpsing) principals. You don’t go into production systems and keep making changes until it works. You write your code, you check it into your favourite repository, then there is some process that will automatically test it, and eventually it will make its way to production environment. That way if you make a mistake, you can see where you made it and if it happens to work just fine, you can easily do it again, and again, and again as you scale out.&lt;/p&gt;
 
