@@ -4,6 +4,7 @@ title:  "Automated Environmental Checks"
 date:   2018-04-09 22:42:22 +0100
 categories: dbachecks PowerShell Pester
 permalink: "about/environmental-checks"
+excerpt: "A post explaining how Pester can be used to do Automated Environmental Checks, and how to unit test your checks."
 ---
 
 ### Unit Test Your Environments

@@ -4,6 +4,7 @@ title:  "DBA blogging with jekyll on GitHub Pages"
 date:   2018-04-07 07:00:00 +0100
 categories: jekyll
 permalink: "about/jekyll-on-GitHub-Pages"
+excerpt: "A short note on how to use jekyll to write this blog."
 ---
 
 ### I decided to start blogging again

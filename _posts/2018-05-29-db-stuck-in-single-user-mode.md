@@ -4,8 +4,8 @@ title:  "DB Stuck in SINGLE USER Mode"
 date:   2018-05-29 20:00:00 +0100
 categories: dbastuff sqlserver
 permalink: "about/db-stuck-single-user-mode"
+excerpt: "What to do when accidently you end up in a situation where one of your databases is stuck in SINGLE_USER mode and some other process is currenlty connected."
 ---
-
 ### Some Background 
 _TLDR? Solution is at the bottom of this page._
 

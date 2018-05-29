@@ -4,6 +4,7 @@ title:  "TDD with VS Code and Pester"
 date:   2018-03-31 16:00:00 +0100
 categories: VSCode PowerShell Pester
 permalink: "about/vscode-and-pester"
+excerpt: "My setup for faster development using VS Code, PowerShell and Pester."
 ---
 
 I have recently switched to [Visual Studio Code](https://code.visualstudio.com/) for writing [PowerShell](https://docs.microsoft.com/en-us/powershell/) scripts. ([Here is why and how](https://blogs.technet.microsoft.com/heyscriptingguy/2016/12/05/get-started-with-powershell-development-in-visual-studio-code/)). At the same time I started using [Pester](https://github.com/pester/Pester) to do TDD with PowerShell too. It works very well out of the box, at least at the beginning of a project. As you are writing your Pester tests file to cover the function you have just written you can simply hit F5 to execute all of the tests in that file. Easy. 
