@@ -1,0 +1,9 @@
+get latest sql server image and try running it. 
+`docker pull` and `docker images`
+use password which is not secure ennough and show that it runs for a moment and quits. 
+show how to use `docker logs sql` to troubleshoot
+
+use ARG not ENV 
+ENTRYPOINT is still using ARG
+
+can this be extended to show how to use dbup with some build automation? 
