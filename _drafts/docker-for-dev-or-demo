@@ -7,3 +7,9 @@ use ARG not ENV
 ENTRYPOINT is still using ARG
 
 can this be extended to show how to use dbup with some build automation? 
+
+
+Docker and linux for SQL DBA 
+
+backup to a network share
+
