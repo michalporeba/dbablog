@@ -4,6 +4,8 @@ Everything appears to be in [containers](https://en.wikipedia.org/wiki/Container
 
 Simple isn't it? Well, it turns not that simple as not everything is on the domain. The SQL Server is, the docker hosts are, but the containers are not.
 
+Additionally there are differences depending on whether you want to run as an independent container, or in docker swarm mode. This blog post focuses on standalone containers, and the swarm mode is covered in <a href="http://dbain.wales/2019/02/22/gmsa-in-swarm-mode/">the follow-up post</a>.
+
 ### The quick answer
 
 The good news is that it is not an unreasonable requirement and it has been done before. The solution is to use Group Managed Service Accounts (gMSA) and Credential Spec Files. A number of people have already documented their efforts. Some were more successful than others. 
@@ -46,7 +48,7 @@ The [test images](https://hub.docker.com/r/michalporeba/sqlgmsatest/) are availa
 In the example I am using [PowerShell](https://docs.microsoft.com/en-us/powershell/scripting/overview?view=powershell-6) to manage my active directory. If the commands I use don't work for you you may be missing the AD modules. To install them add the RSAT-AD-PowerShell windows feature by executing this PowerShell command
 
 ```powershell
-Add-WindowsFeature -FeatureName RSAT-AD-PowerShell
+Add-WindowsFeature RSAT-AD-PowerShell
 ```
 
 ### Group Managed Service Accounts (gMSA)
@@ -68,11 +70,11 @@ Now to create the test service accounts I used the following commands. I was doi
 ```powershell
 New-AdServiceAccount -Name ServiceA -DNSHostName sqlgmsa.local `
    -PrincipalsAllowedToRetrieveManagedPassword "Domain Controllers", "Domain Admins", "CN=DockerHosts,CN=Computers,DC=sqlgmsa,DC=local" `
-   -KerberosEncryptionType RC4, AES128, AES256
+   -KerberosEncryptionType AES128, AES256
 
 New-AdServiceAccount -Name ServiceB -DNSHostName sqlgmsa.local `
    -PrincipalsAllowedToRetrieveManagedPassword "Domain Controllers", "Domain Admins", "CN=DockerHosts,CN=Computers,DC=sqlgmsa,DC=local" `
-   -KerberosEncryptionType RC4, AES128, AES256
+   -KerberosEncryptionType AES128, AES256
 ```
 
 Where ServiceA and ServiceB are the names of the accounts and `"CN=DockerHosts,CN=Computers,DC=sqlgmsa,DC=local"` is the distinguished name of the group I have created for the docker hosts. 
@@ -103,8 +105,7 @@ This part needs to be done on every docker host.
 PS C:\Tmp> [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
 
 # 2. Download the psm1 file using Invoke-WebRequest
-PS C:\Tmp> Invoke-WebRequest "https://raw.githubusercontent.com/MicrosoftDocs/Virtualization-Documentation/live
-/windows-server-container-tools/ServiceAccounts/CredentialSpec.psm1" -OutFile "CredentialSpec.psm1"
+PS C:\Tmp> Invoke-WebRequest "https://raw.githubusercontent.com/MicrosoftDocs/Virtualization-Documentation/live/windows-server-container-tools/ServiceAccounts/CredentialSpec.psm1" -OutFile "CredentialSpec.psm1"
 
 # 3. Import the module
 PS C:\Tmp> Import-Module .\CredentialSpec.psm1
@@ -151,7 +152,7 @@ docker run -d -it -p 8002:80 `
 
 After checking both containers are running with `docker ps` I can start testing. As the test is not focused on anything else but domain authentication I didn't open any ports to the lab, and all I was doing was to either connect to the container and use dbatools to execute a query on the db server, or from the docker host connecting to the service listening on the published port. Here are the example calls using `Invoke-WebRequest` on DH2019A. 
 
-<img src="https://dbainwales.files.wordpress.com/2019/02/sqlgmsa.proof_.png" alt="sqlgmsa.proof" width="1300" height="390" class="alignnone size-full wp-image-96"/>
+<img src="https://dbainwales.files.wordpress.com/2019/02/sqlgmsa.proof_.png" alt="sqlgmsa.proof" width="1300" height="390" class="alignnone size-full wp-image-96" />
 
 ```powershell
 PS C:\> $env:ComputerName
@@ -195,7 +196,11 @@ The biggest lessons where
 * be very careful with `Set-AdServiceAccount` which I have seen in some of the posts out there, 
 * SSPI context errors is not what it seems, and can be very annoying 
 
-This post is long enough as it is, so I will not go into the details of those lessons learnt here but instead include them in a follow up to which I will link here later. I have also run tests with docker in swarm mode and defining services. There are differences and I wasn't able to make it work on all versions of docker and OS, but again, there is more to it so I think it deserves another post. 
+More details about [the lessons learnt](https://dbain.wales/2019/02/26/gmsa-and-docker-lessons-learnt/) can be found in [the follow up post](https://dbain.wales/2019/02/26/gmsa-and-docker-lessons-learnt/).
+
+Trying to do the same but in a service run on Docker in swarm mode is similar, but not exactly the same. I have described it <a href="http://dbain.wales/2019/02/22/gmsa-in-swarm-mode/">here</a>.
+
+This post is long enough as it is, so I will not go into the details of those lessons learnt here but instead include them in a follow up to which I will link here later. 
 
 *[AD]: Active Directory
 *[gMSA]: Group Managed Service Account
